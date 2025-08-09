@@ -416,3 +416,41 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+## Archivos de configuración sensibles
+*.env
+appsettings.Development.json
+appsettings.Local.json
+
+## Carpeta de publicación
+publish/
+Properties/PublishProfiles/
+
+## Archivos de usuario y temporales de Visual Studio
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Carpetas de build
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Archivos de cache de VS y Rider
+.vs/
+.idea/
+
+## Node.js (si usás front embebido)
+node_modules/
+
+## Paquetes NuGet descargados
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## Archivos de cobertura y pruebas
+*.coverage
+*.coveragexml
+TestResult.xml
