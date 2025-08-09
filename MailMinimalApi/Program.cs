@@ -7,12 +7,16 @@ using MailMinimalApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
 builder.Services.AddCors();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<RecaptchaSettings>(builder.Configuration.GetSection("Recaptcha"));
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
+
 
 app.UseCors(p => p
     .AllowAnyOrigin()
