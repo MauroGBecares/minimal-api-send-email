@@ -7,15 +7,17 @@ EXPOSE 5000
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiar solo el .csproj y restaurar dependencias
-COPY *.csproj ./
-RUN dotnet restore
+# Copiar el .csproj con su ruta correcta y restaurar dependencias
+COPY MailMinimalApi/MailMinimalApi.csproj MailMinimalApi/
+RUN dotnet restore MailMinimalApi/MailMinimalApi.csproj
 
-# Copiar el resto de los archivos y publicar en modo Release
+# Copiar el resto de los archivos
 COPY . .
-RUN dotnet publish -c Release -o /app/publish
 
-# Etapa final: copiar los archivos publicados y ejecutar
+# Publicar la app
+RUN dotnet publish MailMinimalApi/MailMinimalApi.csproj -c Release -o /app/publish
+
+# Etapa final
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
