@@ -19,7 +19,7 @@ var app = builder.Build();
 
 
 app.UseCors(p => p
-    .WithOrigins("https://baldurgroup.com/")
+    .WithOrigins("https://baldurgroup.com", "https://baldur-group.vercel.app")
     .AllowAnyHeader()
     .AllowAnyMethod());
 
@@ -106,11 +106,7 @@ app.MapPost("/send-email", async (
     catch (Exception ex)
     {
         Console.WriteLine($"[ERROR] {ex}");
-        return Results.Problem(
-            detail: ex.Message,
-            title: "Error al enviar el correo",
-            statusCode: 500
-        );
+        return Results.Json(new { success = false, error = ex.Message });
     }
 });
 
