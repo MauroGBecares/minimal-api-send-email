@@ -42,17 +42,16 @@ app.MapPost("/send-email", async (
         var captchaToken = form["g-recaptcha-response"].ToString();
         var files = form.Files;
 
-        Console.WriteLine($"from: {form["from"]}");
-        Console.WriteLine($"subject: {form["subject"]}");
-        Console.WriteLine($"body: {form["body"]}");
-        Console.WriteLine($"g-recaptcha-response: {form["g-recaptcha-response"]}");
+        Console.WriteLine($"from: {from}");
+        Console.WriteLine($"subject: {subject}");
+        Console.WriteLine($"body: {body}");
+        Console.WriteLine($"g-recaptcha-response: {captchaToken}");
         Console.WriteLine($"files count: {files.Count}");
 
         if (string.IsNullOrEmpty(captchaToken))
         {
-            return Results.BadRequest("Captcha no completado.");
+            return Results.BadRequest(new { error = "Captcha no completado." });
         }
-
 
         var captchaSecretKey = recaptchaOptions.Value.SecretKey;
 
@@ -69,7 +68,7 @@ app.MapPost("/send-email", async (
         var captchaResult = JsonSerializer.Deserialize<ReCaptchaResponse>(resultJson);
 
         if (captchaResult is null || !captchaResult.success)
-            return Results.BadRequest("Captcha inválido.");
+            return Results.BadRequest(new { error = "Captcha inválido." });
 
         var settings = emailOptions.Value;
 
@@ -83,10 +82,10 @@ app.MapPost("/send-email", async (
         foreach (var file in files)
         {
             if (!settings.AllowedFileTypes.Contains(file.ContentType))
-                return Results.Problem("Tipo de archivo no permitido.");
+                return Results.BadRequest(new { error = "Tipo de archivo no permitido." });
 
             if (file.Length > settings.MaxFileSize)
-                return Results.Problem("El archivo supera el tamaño máximo permitido.");
+                return Results.BadRequest(new { error = "El archivo supera el tamaño máximo permitido." });
 
             using var stream = file.OpenReadStream();
             using var ms = new MemoryStream();
@@ -102,12 +101,16 @@ app.MapPost("/send-email", async (
         await smtp.SendAsync(email);
         await smtp.DisconnectAsync(true);
 
-        return Results.Ok(new { status = "Correo enviado" });
+        return Results.Ok(new { success = true, message = "Correo enviado correctamente" });
     }
     catch (Exception ex)
     {
         Console.WriteLine($"[ERROR] {ex}");
-        return Results.Problem($"Error al enviar el correo: {ex.Message}");
+        return Results.Problem(
+            detail: ex.Message,
+            title: "Error al enviar el correo",
+            statusCode: 500
+        );
     }
 });
 
