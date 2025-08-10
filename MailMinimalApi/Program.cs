@@ -19,7 +19,7 @@ var app = builder.Build();
 
 
 app.UseCors(p => p
-    .AllowAnyOrigin()
+    .WithOrigins("https://baldurgroup.com/")
     .AllowAnyHeader()
     .AllowAnyMethod());
 
