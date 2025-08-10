@@ -42,8 +42,17 @@ app.MapPost("/send-email", async (
         var captchaToken = form["g-recaptcha-response"].ToString();
         var files = form.Files;
 
+        Console.WriteLine($"from: {form["from"]}");
+        Console.WriteLine($"subject: {form["subject"]}");
+        Console.WriteLine($"body: {form["body"]}");
+        Console.WriteLine($"g-recaptcha-response: {form["g-recaptcha-response"]}");
+        Console.WriteLine($"files count: {files.Count}");
+
         if (string.IsNullOrEmpty(captchaToken))
+        {
             return Results.BadRequest("Captcha no completado.");
+        }
+
 
         var captchaSecretKey = recaptchaOptions.Value.SecretKey;
 
