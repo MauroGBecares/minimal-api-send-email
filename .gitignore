@@ -499,5 +499,3 @@ TestResult.xml
 
 ## Archivos de configuración sensibles
 *.env
-appsettings.Development.json
-appsettings.Local.json
