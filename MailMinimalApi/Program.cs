@@ -23,6 +23,8 @@ app.UseCors(p => p
     .AllowAnyHeader()
     .AllowAnyMethod());
 
+app.MapGet("/", () => Results.Ok("API is running"));
+
 app.MapPost("/send-email", async (
     HttpRequest request,
     IOptions<EmailSettings> emailOptions,
